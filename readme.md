@@ -6,13 +6,12 @@ client (CRM) via une interface front-end (site d'administration Django) et un en
 ## Lancement de l'application
 
 * Ouvrez un invite de commande
-* Placez-vous dans le dossier contenant le répertoire OC12
+* Placez-vous dans le dossier contenant le répertoire ProjetOC_12
 * Création de l'environnement virtuel : ```python -m venv env```
 * Activation de l'environnement virtuel :
     * Pour Windows : ```env\Scripts\activate.bat```
     * Pour Linux   : ```env/bin/activate```
 * Installation des dépendances : ```pip install -r requirements.txt```
-* Placez-vous dans le dossier contenant manage.py
 * Restaurez-la database oc_12_db : utiliser un outil de restoration postgresql
 * Ouvrez le fichier setting.py et configurer votre database :
 ```

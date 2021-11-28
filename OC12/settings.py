@@ -78,11 +78,11 @@ WSGI_APPLICATION = 'OC12.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'oc_12_soutenance',
-        'USER': 'oc12_user',
-        'PASSWORD': 'oc12_pass',
+        'NAME': '<database_name>',
+        'USER': '<user>',
+        'PASSWORD': '<password>',
         'HOST': 'localhost',
-        'PORT': '5432'
+        'PORT': '<port>'
     }
 }
 
