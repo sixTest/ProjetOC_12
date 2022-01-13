@@ -33,7 +33,7 @@ class LoginView(APIView):
 class ClientsViewSet(ModelViewSet):
     serializer_class = ClientSerializer
     permission_classes = [IsAuthenticated, ClientsPermissions]
-    queryset = Client.objects.all()
+    parameters = ['first_name', 'email']
 
     def perform_create(self, serializer):
         serializer.save(sales_contact=self.request.user)
@@ -41,11 +41,19 @@ class ClientsViewSet(ModelViewSet):
     def perform_update(self, serializer):
         self.perform_create(serializer)
 
+    def get_queryset(self):
+        kwargs = {}
+        for param in self.parameters:
+            value = self.request.query_params.get(param)
+            if value:
+                kwargs[param] = value
+        return Client.objects.filter(**kwargs)
+
 
 class ContractsViewSet(ModelViewSet):
     serializer_class = ContractSerializer
     permission_classes = [IsAuthenticated, ContractsPermissions]
-    queryset = Contract.objects.all()
+    parameters = ['client', 'date_created', 'amount']
 
     def perform_create(self, serializer):
         if not Client.objects.filter(id=self.request.data['client']).first().sales_contact.id == self.request.user.id:
@@ -55,11 +63,25 @@ class ContractsViewSet(ModelViewSet):
     def perform_update(self, serializer):
         self.perform_create(serializer)
 
+    def get_queryset(self):
+        kwargs = {}
+        for param in self.parameters:
+            value = self.request.query_params.get(param)
+            if value:
+                if param == 'client':
+                    queryset = Client.objects.filter(first_name=value)
+                    if not queryset:
+                        queryset = Client.objects.filter(email=value)
+                    kwargs['client__in'] = queryset
+                else:
+                    kwargs[param] = value
+        return Contract.objects.filter(**kwargs)
+
 
 class EventsViewSet(ModelViewSet):
     serializer_class = EventSerializer
     permission_classes = [IsAuthenticated, EventsPermissions]
-    queryset = Event.objects.all()
+    parameters = ['client', 'event_date']
 
     def perform_create(self, serializer):
         if not Client.objects.filter(id=self.request.data['client']).first().sales_contact.id == self.request.user.id:
@@ -80,6 +102,20 @@ class EventsViewSet(ModelViewSet):
             serializer.save()
         else:
             self.perform_create(serializer)
+
+    def get_queryset(self):
+        kwargs = {}
+        for param in self.parameters:
+            value = self.request.query_params.get(param)
+            if value:
+                if param == 'client':
+                    queryset = Client.objects.filter(first_name=value)
+                    if not queryset:
+                        queryset = Client.objects.filter(email=value)
+                    kwargs['client__in'] = queryset
+                else:
+                    kwargs[param] = value
+        return Event.objects.filter(**kwargs)
 
 
 class ClientContractsViewSet(ListModelMixin, GenericViewSet):

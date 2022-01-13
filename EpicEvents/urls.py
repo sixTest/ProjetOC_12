@@ -5,9 +5,9 @@ from rest_framework_nested.routers import DefaultRouter, NestedSimpleRouter
 
 router = DefaultRouter()
 
-router.register('client', ClientsViewSet)
-router.register('contract', ContractsViewSet)
-router.register('event', EventsViewSet)
+router.register('client', ClientsViewSet, basename='client')
+router.register('contract', ContractsViewSet, basename='contract')
+router.register('event', EventsViewSet, basename='event')
 
 client_contracts_router = NestedSimpleRouter(router, 'client', 'client')
 client_contracts_router.register('contracts', ClientContractsViewSet, basename='contract')
@@ -22,5 +22,5 @@ urlpatterns = [path('login/', LoginView.as_view()),
                path('', include(router.urls)),
                path('', include(client_contracts_router.urls)),
                path('', include(client_event_router.urls)),
-               path('', include(contract_event_router.urls))
+               path('', include(contract_event_router.urls)),
 ]
